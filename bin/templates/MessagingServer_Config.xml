@@ -1,0 +1,3 @@
+<Root>
+  <Config default_user_server="http://127.0.0.1:8002/" user_send_key="null" user_recv_key="null" default_grid_server="http://127.0.0.1:8003/" grid_send_key="null" grid_recv_key="null" database_connect="Data Source=localhost;Database=grid;User ID=root;Password=root;" database_provider="OpenSim.Data.MySQL.dll" region_comms_provider="OpenSim.Region.Communications.OGS1.dll" http_port="8006" http_ssl="False" published_ip="127.0.0.1" console_user="" console_pass="" />
+</Root>

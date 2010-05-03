@@ -1,0 +1,10 @@
+ui_*.h
+*.dll
+*.exe
+*.o
+debug/
+release/
+*.Debug
+*.Release
+Makefile
+Makefile.*
