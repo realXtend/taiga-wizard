@@ -196,7 +196,7 @@ void Wizard::on_btnAddRegion_clicked()
 
         QString ret = ConfigHelper::CheckRegionForConflicts(regions, &regionWizardMap);
         if(ret==""){
-            QString name = regionWizardMap.operator []("region_name");
+            QString name = regionWizardMap.value("region_name");
             name = ConfigHelper::RemoveQuotes(name);
             // update region list
             QListWidgetItem *item = new QListWidgetItem(ui->listWidgetRegions);
@@ -237,7 +237,7 @@ void Wizard::on_btnUpdateRegion_clicked()
         // update listWidgetRegions item
         QString tooltip = ConfigHelper::RegionMapToString(&regionWizardMap);
         item->setToolTip(tooltip);
-        QString name = regionWizardMap.operator []("region_name");
+        QString name = regionWizardMap.value("region_name");
         name = ConfigHelper::RemoveQuotes(name);
         item->setText(name);
     }
@@ -337,11 +337,11 @@ void Wizard::loadDefaults()
 
 void Wizard::setRegionsFromIni()
 {
-    QString key = m_configHandler.m_RegionIni->m_Sections.keys().operator [](0);
+    QString key = m_configHandler.m_RegionIni->m_Sections.keys().at(0);
 
     foreach(QString region_name, m_configHandler.m_RegionIni->m_Sections.keys())
     {
-        QMap<QString,QString>* map = m_configHandler.m_RegionIni->m_Sections.operator [](region_name);
+        QMap<QString,QString>* map = m_configHandler.m_RegionIni->m_Sections.value(region_name);
         map->insert("region_name", region_name);
         QString toolTip = ConfigHelper::RegionMapToString(map);
         QListWidgetItem* item = new QListWidgetItem(ui->listWidgetRegions);
@@ -420,14 +420,14 @@ void Wizard::on_btnChangeDataBaseNames_clicked()
     {
         // do config editing
         QMap<QString, QString>* dbNames = dbd.GetDatabaseNames();
-        QString simulator_db_name = dbNames->operator []("simulator_db_name");
-        setCurrentDbName(configIniSections, "sim_db_connection_string", "OpenSim.ini", "Startup:storage_connection_string", dbNames->operator []("simulator_db_name"));
-        setCurrentDbName(configIniSections, "grid_db_connection_string", "OpenSim.Server.ini", "AssetService:ConnectionString", dbNames->operator []("asset_service_db_name"));
-        setCurrentDbName(configIniSections, "grid_db_connection_string", "OpenSim.Server.ini", "InventoryService:ConnectionString", dbNames->operator []("inventory_service_db_name"));
-        setCurrentDbName(configIniSections, "grid_db_connection_string", "OpenSim.Server.ini", "GridService:ConnectionString", dbNames->operator []("grid_service_db_name"));
-        setCurrentDbName(configIniSections, "grid_db_connection_string", "UserServer_Config.xml", "Config:database_connect", dbNames->operator []("user_service_db_name"));
-        setCurrentDbName(configIniSections, "grid_db_connection_string", "MessagingServer_Config.xml", "Config:database_connect", dbNames->operator []("messaging_service_db_name"));
-        setCurrentDbName(configIniSections, "grid_nhibernate", "OpenSim.Server.ini", "CableBeachService:ConnectionString", dbNames->operator []("nhibernate_service_db_name"));
+        QString simulator_db_name = dbNames->value("simulator_db_name");
+        setCurrentDbName(configIniSections, "sim_db_connection_string", "OpenSim.ini", "Startup:storage_connection_string", dbNames->value("simulator_db_name"));
+        setCurrentDbName(configIniSections, "grid_db_connection_string", "OpenSim.Server.ini", "AssetService:ConnectionString", dbNames->value("asset_service_db_name"));
+        setCurrentDbName(configIniSections, "grid_db_connection_string", "OpenSim.Server.ini", "InventoryService:ConnectionString", dbNames->value("inventory_service_db_name"));
+        setCurrentDbName(configIniSections, "grid_db_connection_string", "OpenSim.Server.ini", "GridService:ConnectionString", dbNames->value("grid_service_db_name"));
+        setCurrentDbName(configIniSections, "grid_db_connection_string", "UserServer_Config.xml", "Config:database_connect", dbNames->value("user_service_db_name"));
+        setCurrentDbName(configIniSections, "grid_db_connection_string", "MessagingServer_Config.xml", "Config:database_connect", dbNames->value("messaging_service_db_name"));
+        setCurrentDbName(configIniSections, "grid_nhibernate", "OpenSim.Server.ini", "CableBeachService:ConnectionString", dbNames->value("nhibernate_service_db_name"));
 
         m_configHandler.m_ConfigSetupIni->UpdateFile();
         QString cwd = QDir::currentPath();
@@ -465,7 +465,7 @@ void Wizard::on_lineEditGridDBPassword_textChanged(QString )
 
 QString Wizard::getCurrentDbName(QMap<QString, QMap<QString,QString>* >& configIniSections, QString sectionName, QString fileName, QString searchString)
 {
-    QString settingString = ((QMap<QString,QString>*)configIniSections.operator [](sectionName))->operator [](fileName);
+    QString settingString = ((QMap<QString,QString>*)configIniSections.value(sectionName))->value(fileName);
     int p0 = settingString.indexOf(searchString,0);
     int p1 = settingString.indexOf("|", p0) + 1;
     int p2 = settingString.indexOf(")", p1);
@@ -477,7 +477,7 @@ QString Wizard::getCurrentDbName(QMap<QString, QMap<QString,QString>* >& configI
 void Wizard::setCurrentDbName(QMap<QString, QMap<QString,QString>* >& configIniSections, QString sectionName, QString fileName, QString searchString, QString newName)
 {
     // find and cut down to 3 pieces, remove piece n. 2 and attach newName, and set it to configIniSections
-    QString settingString = ((QMap<QString,QString>*)configIniSections.operator [](sectionName))->operator [](fileName);
+    QString settingString = ((QMap<QString,QString>*)configIniSections.value(sectionName))->value(fileName);
     int p0 = settingString.indexOf(searchString,0);
     int p1 = settingString.indexOf("|", p0) + 1;
     int p2 = settingString.indexOf(")", p1);
@@ -487,7 +487,7 @@ void Wizard::setCurrentDbName(QMap<QString, QMap<QString,QString>* >& configIniS
     QString string3 = settingString.mid(p2);
     string1.append(newName);
     string1.append(string3);
-    ((QMap<QString,QString>*)configIniSections.operator [](sectionName))->operator [](fileName) = string1;
+    configIniSections.value(sectionName)->insert(fileName, string1);
 }
 
 void Wizard::on_lineEditSaveName_textChanged(QString )
@@ -512,7 +512,7 @@ QList<int> Wizard::GetRegionPorts()
         QString key = "sim_region_number_" + QString("%1").arg(i);
         QString val = qlwi->toolTip();
         QMap<QString,QString>* map = ConfigHelper::StringToMap(val, "|", "=");
-        QString portStr = map->operator []("InternalPort");
+        QString portStr = map->value("InternalPort");
         portStr = ConfigHelper::RemoveQuotes(portStr);
         int port = portStr.toInt();
         ports.append(port);

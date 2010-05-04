@@ -42,7 +42,7 @@ QString ConfigXmlFile::SetConfigElement(QString name, QMap<QString,QString> attr
                 QDomNode node = attrMap.namedItem(attrKey);
                 QDomAttr attr = node.toAttr();
                 //attr.setNodeValue(attributes[key]);
-                QString val = attributes.operator [](key);
+                QString val = attributes.value(key);
                 val = ConfigHelper::RemoveQuotes(val);
                 attr.setValue(val);
                 //attr.setValue(attributes[key]);

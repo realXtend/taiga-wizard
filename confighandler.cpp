@@ -97,14 +97,14 @@ void ConfigHandler::WriteValuesToConf(ConfigFile* conf, QMap<QString, QString> u
             }
         }
 
-        QString valueToSet = uiMap.operator [](section);
+        QString valueToSet = uiMap.value(section);
 
-        QMap<QString,QString>* map = m_ConfigSetupIni->m_Sections.operator [](section);
+        QMap<QString,QString>* map = m_ConfigSetupIni->m_Sections.value(section);
         if(map->keys().contains(fileName))
         {
             try
             {
-                QString commaList = map->operator [](fileName);
+                QString commaList = map->value(fileName);
                 SetValueToConfiguration(commaList, conf, valueToSet);
             }
             catch(int e)
@@ -114,10 +114,10 @@ void ConfigHandler::WriteValuesToConf(ConfigFile* conf, QMap<QString, QString> u
         }
         if(map->keys().contains(fileName+":port"))
         {
-            QString commaList = map->operator [](fileName+":port");
+            QString commaList = map->value(fileName+":port");
             // need to separate port from valueToSet (http://ip:port)
             if(valueToSet.contains(':')){
-                QString port = ((QStringList)valueToSet.split(':')).operator [](2);
+                QString port = ((QStringList)valueToSet.split(':')).at(2);
                 SetValueToConfiguration(commaList, conf, port);
             } else {
                 QMessageBox* box = new QMessageBox();
@@ -127,11 +127,11 @@ void ConfigHandler::WriteValuesToConf(ConfigFile* conf, QMap<QString, QString> u
         }
         if(map->keys().contains(fileName+":ip"))
         {
-            QString commaList = map->operator [](fileName+":ip");
+            QString commaList = map->value(fileName+":ip");
             // need to separate ip from valueToSet
             if(valueToSet.contains(':')){
-                QString slash_ip = ((QStringList)valueToSet.split(':')).operator [](1);
-                QString ip = slash_ip.split('/', QString::SkipEmptyParts).operator [](0);
+                QString slash_ip = ((QStringList)valueToSet.split(':')).at(1);
+                QString ip = slash_ip.split('/', QString::SkipEmptyParts).at(0);
                 SetValueToConfiguration(commaList, conf, ip);
             } else {
                 QMessageBox* box = new QMessageBox();
@@ -147,7 +147,7 @@ void ConfigHandler::WriteValuesToRegion(QMap<QString, QString> uiMap)
     QMap<QString, QString> regions;
     foreach(QString key, uiMap.keys()){
         if(key.startsWith("sim_region_number_")){
-            regions.insert(key, uiMap.operator [](key));
+            regions.insert(key, uiMap.value(key));
         }
     }
     m_RegionIni->m_Sections.clear();
@@ -159,7 +159,7 @@ void ConfigHandler::WriteValuesToRegion(QMap<QString, QString> uiMap)
     foreach(QString key, regions.keys())
     {
         QString name;
-        QString data = regions.operator [](key);
+        QString data = regions.value(key);
         QStringList pairs = data.split("|");
         QMap<QString, QString>* regionValues = new QMap<QString, QString>();
         QList<QString>* sectionKeyOrder = new QList<QString>();
@@ -167,11 +167,11 @@ void ConfigHandler::WriteValuesToRegion(QMap<QString, QString> uiMap)
         foreach(QString pair, pairs)
         {
             QStringList split = pair.split("=");
-            regionValues->insert(split.operator [](0),split.operator [](1));
-            sectionKeyOrder->append(split.operator [](0));
-            if(split.operator [](0)=="region_name")
+            regionValues->insert(split.at(0),split.at(1));
+            sectionKeyOrder->append(split.at(0));
+            if(split.at(0)=="region_name")
             {
-                name = split.operator [](1);
+                name = split.at(1);
             }
         }
         m_RegionIni->m_Sections.insert(name, regionValues);
@@ -216,8 +216,8 @@ void ConfigHandler::SetValueToConf(QString commaListOfDestinies, ConfigIniFile* 
     {
         if(strPair.contains(':')){
             QStringList pair = strPair.split(':');
-            QString sect = pair.operator [](0);
-            QString iniKey = pair.operator [](1);
+            QString sect = pair.at(0);
+            QString iniKey = pair.at(1);
             bool ret = CheckSetValueTranslation(iniKey, valueToSet);
             if(ret)
             {
@@ -305,7 +305,7 @@ void ConfigHandler::SetValueAppend(QString& destiny, QString& valueToSet)
 
         if(valueToSet==compare)
         {
-            valueToSet.append(":"+split[1]);
+            valueToSet.append(":"+split.at(1));
             break;
         }
     }
@@ -437,20 +437,20 @@ void ConfigHandler::SetUIMapValuesToConfConfiguration(QMap<QString,QString>* uiM
         {
             if(confKey==uiKey)
             {
-                QMap<QString,QString>* section = m_ConfigSetupIni->m_Sections.operator [](confKey);
-                section->insert("Taiga-Config-Value", uiMap->operator [](uiKey));
+                QMap<QString,QString>* section = m_ConfigSetupIni->m_Sections.value(confKey);
+                section->insert("Taiga-Config-Value", uiMap->value(uiKey));
             }
         }
         if(uiKey.startsWith("sim_region_number_"))
         {
-            regions->insert(uiKey, "\"" + uiMap->operator [](uiKey) + "\"");
+            regions->insert(uiKey, "\"" + uiMap->value(uiKey) + "\"");
             regionKeys->insert(0, uiKey);
         }
     }
     m_ConfigSetupIni->m_Sections.insert("Regions",regions);
     m_ConfigSetupIni->m_SectionOrder.insert(0, "Regions");
-    m_ConfigSetupIni->m_SectionKeyOrders["Regions"] = regionKeys;
-    m_ConfigSetupIni->m_SectionKeyComments["Regions"] = new QMap<QString, QString>();
+    m_ConfigSetupIni->m_SectionKeyOrders.insert("Regions", regionKeys);
+    m_ConfigSetupIni->m_SectionKeyComments.insert("Regions", new QMap<QString, QString>());
 }
 
 QStringList ConfigHandler::GetDatabasesFromConfigIni()

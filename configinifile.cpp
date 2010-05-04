@@ -52,11 +52,11 @@ ConfigIniFile::ConfigIniFile(QString fileName):ConfigFile(fileName)
                         {
                             if(currentComment!=QString::null && currentComment!="")
                             {
-                                ((QMap<QString, QString>*)m_SectionKeyComments.operator [](section))->insert(key, currentComment);
+                                ((QMap<QString, QString>*)m_SectionKeyComments.value(section))->insert(key, currentComment);
                                 currentComment.clear();
                             }
-                            ((QList<QString>*)m_SectionKeyOrders.operator [](section))->append(key);
-                            m_Sections[section]->insert(key, value);
+                            ((QList<QString>*)m_SectionKeyOrders.value(section))->append(key);
+                            m_Sections.value(section)->insert(key, value);
                         }
                     } else {
                         errors = true;
@@ -86,8 +86,8 @@ bool ConfigIniFile::ParseConfigItem(QString str, QString& key, QString &value)
 {
      QStringList split = str.split('=');
      if(split.length()==2){
-         key = split[0].trimmed();
-         value = split[1].trimmed();
+         key = split.at(0).trimmed();
+         value = split.at(1).trimmed();
          return true;
      }
      else if(split.length()>2)
@@ -98,7 +98,7 @@ bool ConfigIniFile::ParseConfigItem(QString str, QString& key, QString &value)
          lastarg = lastarg.trimmed();
          if(firstarg.startsWith("\"")&&lastarg.endsWith("\"")) // checking that rest of the '=' s are inside ""'s
          {
-            key = split[0].trimmed();
+            key = split.at(0).trimmed();
             split.removeAt(0);
             value = split.join("=");
             /*
@@ -123,7 +123,7 @@ void ConfigIniFile::SetConfigItem(QString section, QString key, QString value)
     {
         if(section!=QString::null&&section!="")
         {
-            m_Sections[section]->insert(key, value);
+            m_Sections.value(section)->insert(key, value);
         }
         else
         {
@@ -136,7 +136,7 @@ void ConfigIniFile::SetConfigItem(QString section, QString key, QString value)
 void ConfigIniFile::RemoveConfigItem(QString section, QString key, QString value)
 {
     if(section!=QString::null && section!=""){
-        m_Sections[section]->remove(key);
+        m_Sections.value(section)->remove(key);
     } else {m_GlobalItems.remove(key);}
     UpdateFile();
 }
@@ -156,7 +156,7 @@ void ConfigIniFile::UpdateFile() // will lose comments on ini file
         IniSection* section = m_Sections[key];
         foreach(QString itemKey, section->keys())
         {
-            QString value = section->operator [](itemKey);
+            QString value = section->value(itemKey);
             itemKey = itemKey.trimmed();
             if(itemKey!=""){
                 ConfigContents.append(itemKey+"="+value+"\n\r");
@@ -168,22 +168,22 @@ void ConfigIniFile::UpdateFile() // will lose comments on ini file
     foreach(QString key, m_GlobalsOrder)
     {
         if(m_GlobalKeyComments.contains(key))
-            ConfigContents.append(m_GlobalKeyComments.operator [](key));
-        ConfigContents.append(key+"="+m_GlobalItems[key]+"\n\r");
+            ConfigContents.append(m_GlobalKeyComments.value(key));
+        ConfigContents.append(key+"="+m_GlobalItems.value(key)+"\n\r");
     }
     foreach(QString key, m_SectionOrder)
     {
         if(m_SectionComments.contains(key))
-            ConfigContents.append(m_SectionComments.operator [](key));
+            ConfigContents.append(m_SectionComments.value(key));
         ConfigContents.append("["+key+"]\n\r");
 
-        QList<QString>* sectionKeysOrder = m_SectionKeyOrders.operator [](key);
-        QMap<QString,QString>* sectionKeyValuePairs = m_Sections.operator [](key);
-        QMap<QString,QString>* sectionKeyComments = m_SectionKeyComments.operator [](key);
+        QList<QString>* sectionKeysOrder = m_SectionKeyOrders.value(key);
+        QMap<QString,QString>* sectionKeyValuePairs = m_Sections.value(key);
+        QMap<QString,QString>* sectionKeyComments = m_SectionKeyComments.value(key);
 
         if(sectionKeyValuePairs->contains("Taiga-Config-Value")) // saving template
         {
-            QString val = sectionKeyValuePairs->operator []("Taiga-Config-Value");
+            QString val = sectionKeyValuePairs->value("Taiga-Config-Value");
             QString line = "Taiga-Config-Value=";
             line.append(val);
             ConfigContents.append(line + "\n\r");
@@ -191,11 +191,11 @@ void ConfigIniFile::UpdateFile() // will lose comments on ini file
 
         foreach(QString itemKey, *sectionKeysOrder)
         {
-            QString value = sectionKeyValuePairs->operator [](itemKey);
+            QString value = sectionKeyValuePairs->value(itemKey);
             itemKey = itemKey.trimmed();
             if(itemKey!=QString::null && itemKey!=""){
                 if(sectionKeyComments->contains(itemKey))
-                    ConfigContents.append(sectionKeyComments->operator [](itemKey));
+                    ConfigContents.append(sectionKeyComments->value(itemKey));
                 ConfigContents.append(itemKey+"="+value+"\n\r");
             }
         }

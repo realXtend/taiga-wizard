@@ -70,7 +70,7 @@ void ConfigFile::SaveFile(QString path)
     QString current = QDir::currentPath();
     QString destinyFile;
     QStringList list = ConfigFileName.split(QDir::separator());
-    QString fileName = list.operator [](list.count()-1);
+    QString fileName = list.at(list.count()-1);
     if(path!=""){
         //destinyFile = current + QDir::separator() + path + QDir::separator() + fileName;
         destinyFile = path + QDir::separator() + fileName;

@@ -140,7 +140,7 @@ void Dialog::on_pushButton_3_clicked() //Advanced
 
         if(loadedConf->m_Sections.contains("ConfigData"))
         {
-            QMap<QString,QString>* confData = loadedConf->m_Sections.operator []("ConfigData");
+            QMap<QString,QString>* confData = loadedConf->m_Sections.value("ConfigData");
             m_Wizard.m_GridConfig = confData->contains("grid");
             m_Wizard.m_JoinGrid = confData->contains("sim"),
             m_Wizard.m_Regions = confData->contains("regions");

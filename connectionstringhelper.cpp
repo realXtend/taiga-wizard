@@ -59,9 +59,9 @@ void ConnectionStringHelper::DBParamsFromConnectionString(QString dbPlugin, QStr
     if(dbPlugin=="OpenSim.Data.MySQL.dll")
     {
         QMap<QString,QString>* map = ConfigHelper::StringToMap(connStr, ";", "=");
-        datasource = map->operator []("Data Source");
-        user = map->operator []("User ID");
-        password = map->operator []("Password");
+        datasource = map->value("Data Source");
+        user = map->value("User ID");
+        password = map->value("Password");
     }
     else if(dbPlugin=="OpenSim.Data.SQLite.dll")
     {

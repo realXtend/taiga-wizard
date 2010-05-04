@@ -37,7 +37,7 @@ QString ConfigHelper::CheckURLsFromMap(QMap<QString,QString> map)
     {
         if(key!="sim_http_port")
         {
-            QString url = map.operator [](key);
+            QString url = map.value(key);
             QUrl check(url, QUrl::StrictMode);
             QString scheme = check.scheme();
             if(scheme!="http")
@@ -47,7 +47,7 @@ QString ConfigHelper::CheckURLsFromMap(QMap<QString,QString> map)
         }
         if(key=="sim_http_port")
         {
-            QString port = map.operator [](key);
+            QString port = map.value(key);
             bool ok;
             port.toUInt(&ok);
             if(!ok)
@@ -90,7 +90,7 @@ void ConfigHelper::MapToFormLayout(QMap<QString,QString>* map, QFormLayout* form
                 QString name = ((QLineEdit*)widget)->accessibleName();
                 if(key==name)
                 {
-                    QString value = map->operator [](key);
+                    QString value = map->value(key);
                     value = RemoveQuotes(value);
                     ((QLineEdit*)widget)->setText(value);
                 }
@@ -113,7 +113,7 @@ void ConfigHelper::MapToFormLayout(QMap<QString,QString>* map, QGridLayout* form
                 QString name = ((QLineEdit*)widget)->accessibleName();
                 if(key==name)
                 {
-                    QString value = map->operator [](key);
+                    QString value = map->value(key);
                     value = RemoveQuotes(value);
                     ((QLineEdit*)widget)->setText(value);
                 }
@@ -208,17 +208,17 @@ void ConfigHelper::CopyMapToMap(QMap<QString,QString>* destiny, QMap<QString,QSt
 {
     foreach(QString key, source->keys())
     {
-        destiny->insert(key, source->operator [](key));
+        destiny->insert(key, source->value(key));
     }
 }
 
 QString ConfigHelper::CheckRegionForConflicts(QMap<QString, QMap<QString,QString>* > regions, QMap<QString,QString>* newRegion)
 {
     // region_name, RegionUUID, Location, InternalPort
-    QString region_name = newRegion->operator []("region_name");
-    QString RegionUUID = newRegion->operator []("RegionUUID");
-    QString Location = newRegion->operator []("Location");
-    QString InternalPort = newRegion->operator []("InternalPort");
+    QString region_name = newRegion->value("region_name");
+    QString RegionUUID = newRegion->value("RegionUUID");
+    QString Location = newRegion->value("Location");
+    QString InternalPort = newRegion->value("InternalPort");
 
     foreach(QString name, regions.keys())
     {
@@ -226,16 +226,16 @@ QString ConfigHelper::CheckRegionForConflicts(QMap<QString, QMap<QString,QString
         {
             return "Name";
         }
-        QMap<QString,QString>* reg = regions.operator [](name);
-        if(RegionUUID==reg->operator []("RegionUUID"))
+        QMap<QString,QString>* reg = regions.value(name);
+        if(RegionUUID==reg->value("RegionUUID"))
         {
             return "RegionUUID";
         }
-        if(Location==reg->operator []("Location"))
+        if(Location==reg->value("Location"))
         {
             return "Location";
         }
-        if(InternalPort==reg->operator []("InternalPort"))
+        if(InternalPort==reg->value("InternalPort"))
         {
             return "InternalPort";
         }
@@ -256,7 +256,7 @@ QString ConfigHelper::CheckRegionForConflicts(QListWidget* regions, QMap<QString
         QStringList split = toolTip.split("|");
         foreach(QString pair, split)
         {
-            region->insert(pair.split("=").operator [](0), pair.split("=").operator [](1));
+            region->insert(pair.split("=").at(0), pair.split("=").at(1));
         }
         region->insert("region_name", name);
         regionsMap.insert(region);
@@ -270,7 +270,7 @@ QString ConfigHelper::RegionMapToString(QMap<QString,QString>* map)
     QString retVal = "";
     foreach(QString key, map->keys())
     {
-        QString value = map->operator [](key);
+        QString value = map->value(key);
         QString keyValue = key.remove("|"); // will use "|" as separator so its forbidden
         QString valValue = value.remove("|");
         retVal.append(keyValue+"="+valValue+"|");
@@ -292,7 +292,7 @@ QMap<QString, QMap<QString,QString>* > ConfigHelper::ListWidgetToMap(QListWidget
         QStringList split = toolTip.split("|");
         foreach(QString pair, split)
         {
-            region->insert(pair.split("=").operator [](0), pair.split("=").operator [](1));
+            region->insert(pair.split("=").at(0), pair.split("=").at(1));
         }
         region->insert("region_name", name);
         regionsMap.insert(name, region);
@@ -307,7 +307,7 @@ QMap<QString,QString>* ConfigHelper::StringToMap(QString str, QString separator,
     foreach(QString pair, pairs)
     {
         if(pair.split(pairSeparator).count()==2){
-            map->insert(pair.split(pairSeparator).operator [](0), pair.split(pairSeparator).operator [](1));
+            map->insert(pair.split(pairSeparator).at(0), pair.split(pairSeparator).at(1));
         }
     }
     return map;
@@ -326,18 +326,18 @@ QMap<QString,QString>* ConfigHelper::ConfigSectionsToValueMap(QMap<QString,QMap<
     {
         if(key!="Regions")
         {
-            QMap<QString,QString>* section = sections.operator [](key);
-            QString value = section->operator []("Taiga-Config-Value");
+            QMap<QString,QString>* section = sections.value(key);
+            QString value = section->value("Taiga-Config-Value");
             value = ConfigHelper::RemoveQuotes(value);
             map->insert(key, value);
         }
         else
         {
-            QMap<QString,QString>* regions = sections.operator [](key);
+            QMap<QString,QString>* regions = sections.value(key);
             foreach(QString region, regions->keys())
             {
                 region = ConfigHelper::RemoveQuotes(region);
-                map->insert(region, regions->operator [](region));
+                map->insert(region, regions->value(region));
             }
         }
     }
@@ -358,7 +358,7 @@ void ConfigHelper::SetValuesToUI(QMap<QString,QString>* map, QWidget* widget)
                 if(key!=""){
                     if(map->contains(key))
                     {
-                        QString value = map->operator [](key);
+                        QString value = map->value(key);
                         //QString value = map[key];
                         int index=0;
                         for(int i=0; i<combo->count();i++)
@@ -379,7 +379,7 @@ void ConfigHelper::SetValuesToUI(QMap<QString,QString>* map, QWidget* widget)
                 if(key!=""){
                     if(map->contains(key))
                     {
-                        textEdit->setText(map->operator [](key));
+                        textEdit->setText(map->value(key));
                     }
                 }
             }
@@ -389,7 +389,7 @@ void ConfigHelper::SetValuesToUI(QMap<QString,QString>* map, QWidget* widget)
                 if(key!=""){
                     if(map->contains(key))
                     {
-                        lineEdit->setText(map->operator [](key));
+                        lineEdit->setText(map->value(key));
                     }
                 }
             }
@@ -399,7 +399,7 @@ void ConfigHelper::SetValuesToUI(QMap<QString,QString>* map, QWidget* widget)
                 if(key!=""){
                     if(map->contains(key))
                     {
-                        label->setText(map->operator [](key));
+                        label->setText(map->value(key));
                     }
                 }
             }
@@ -414,7 +414,7 @@ void ConfigHelper::SetValuesToUI(QMap<QString,QString>* map, QWidget* widget)
                     {
                         if(key.startsWith("sim_region_number_"))
                         {
-                            QString regionData = map->operator [](key);
+                            QString regionData = map->value(key);
                             regionData = ConfigHelper::RemoveQuotes(regionData);
                             QStringList pairs = regionData.split("|");
                             QString name = "";
@@ -423,7 +423,7 @@ void ConfigHelper::SetValuesToUI(QMap<QString,QString>* map, QWidget* widget)
                                 if(pair.split("=").at(0)=="region_name")
                                 name = pair.split("=").at(1);
                             }
-                            //regions.insert(key,map->operator [](key));
+                            //regions.insert(key,map->value(key));
                             QListWidgetItem* item = new QListWidgetItem(listWidget);
                             name = RemoveQuotes(name);
                             item->setText(name);
