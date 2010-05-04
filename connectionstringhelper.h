@@ -15,6 +15,7 @@ public:
     static QString ConstructMySqlConnectionString(QString dataSource, QString user, QString password);
     static QString ConstructSqliteConnectionString();
     static QString ConstructNHibernateConnectionString(QString dataSource, QString user, QString password, QString dbPlugin, QString& propertyProvider);
+    static QString ConstructModrexConnectionString(QString dataSource, QString user, QString password, QString dbPlugin);
 
     static void DBParamsFromConnectionString(QString dbPlugin, QString connStr, QString& user, QString& password, QString& datasource);
 };

@@ -68,3 +68,22 @@ void ConnectionStringHelper::DBParamsFromConnectionString(QString dbPlugin, QStr
         // nothing to do
     }
 }
+
+QString ConnectionStringHelper::ConstructModrexConnectionString(QString dataSource, QString user, QString password, QString dbPlugin)
+{
+    /*
+    options:
+    db_connectionstring = "MySQLDialect;MySqlDataDriver;Data Source=localhost;Database=os_modrex;User ID=root;Password=root"
+    db_connectionstring = "SQLiteDialect;MonoSqliteDriver, ModularRex.NHibernate;URI=file:RexObjects.db,version=3"
+    */
+    if(dbPlugin=="OpenSim.Data.MySQL.dll")
+    {
+        QString connStr = "MySQLDialect;MySqlDataDriver;Data Source="+dataSource+";Database=${Database}$;User ID="+user+";Password="+password;
+        return connStr;
+    }
+    else if(dbPlugin=="OpenSim.Data.SQLite.dll")
+    {
+        QString connStr = "SQLiteDialect;MonoSqliteDriver, ModularRex.NHibernate;URI=file:${Database}$.db,version=3";
+        return connStr;
+    }
+}

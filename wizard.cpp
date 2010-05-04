@@ -34,6 +34,7 @@ Wizard::Wizard(QWidget *parent, RegionWizard* regionWizard) :
     ui->labelSimDBPlugin->hide();
     ui->labelGridNhib->hide();
     ui->labelPropProv->hide();
+    ui->labelModRexConnStr->hide();
 
     loadDefaults();
     setDatabasesFromConfig();
@@ -291,20 +292,23 @@ void Wizard::constructDatabaseConnectionStringAndDBPlugin()
     QString connStr = "";
     QString nhibConnStr = "";
     QString propertyProvider = "";
+    QString modrexConnStr = "";
     if(dbPlugin=="OpenSim.Data.MySQL.dll")
     {
         connStr = ConnectionStringHelper::ConstructMySqlConnectionString(dbDataSource, dbUser, dbPassword);
     }
     else if (dbPlugin=="OpenSim.Data.SQLite.dll")
     {
-        QString connStr = ConnectionStringHelper::ConstructSqliteConnectionString();
+        connStr = ConnectionStringHelper::ConstructSqliteConnectionString();
     }
     nhibConnStr = ConnectionStringHelper::ConstructNHibernateConnectionString(dbDataSource, dbUser, dbPassword, dbPlugin, propertyProvider);
+    modrexConnStr = ConnectionStringHelper::ConstructModrexConnectionString(dbDataSource, dbUser, dbPassword, dbPlugin);
 
     ui->labelSimDBString->setText(connStr);
     ui->labelGridDBString->setText(connStr);
     ui->labelGridNhib->setText(nhibConnStr);
     ui->labelPropProv->setText(propertyProvider);
+    ui->labelModRexConnStr->setText(modrexConnStr);
 }
 
 void Wizard::on_btnSaveConfigs_clicked()
@@ -403,6 +407,7 @@ void Wizard::on_btnChangeDataBaseNames_clicked()
     QString user_service_db_name = getCurrentDbName(configIniSections, "grid_db_connection_string", "UserServer_Config.xml", "Config:database_connect");
     QString messaging_service_db_name = getCurrentDbName(configIniSections, "grid_db_connection_string", "MessagingServer_Config.xml", "Config:database_connect");
     QString nhibernate_service_db_name = getCurrentDbName(configIniSections, "grid_nhibernate", "OpenSim.Server.ini", "CableBeachService:ConnectionString");
+    QString modrex_db_name = getCurrentDbName(configIniSections, "modrex_db_connection_string", "addon-modules/ModreX/config/modrex.ini", "realXtend:db_connectionstring");
 
     QMap<QString, QString>* names = new QMap<QString, QString>();
     names->insert("simulator_db_name", simulator_db_name);
@@ -412,6 +417,7 @@ void Wizard::on_btnChangeDataBaseNames_clicked()
     names->insert("user_service_db_name", user_service_db_name);
     names->insert("messaging_service_db_name", messaging_service_db_name);
     names->insert("nhibernate_service_db_name", nhibernate_service_db_name);
+    names->insert("modrex_db_name", modrex_db_name);
 
     dbd.SetDatabaseNames(names);
 
@@ -428,6 +434,8 @@ void Wizard::on_btnChangeDataBaseNames_clicked()
         setCurrentDbName(configIniSections, "grid_db_connection_string", "UserServer_Config.xml", "Config:database_connect", dbNames->value("user_service_db_name"));
         setCurrentDbName(configIniSections, "grid_db_connection_string", "MessagingServer_Config.xml", "Config:database_connect", dbNames->value("messaging_service_db_name"));
         setCurrentDbName(configIniSections, "grid_nhibernate", "OpenSim.Server.ini", "CableBeachService:ConnectionString", dbNames->value("nhibernate_service_db_name"));
+        setCurrentDbName(configIniSections, "modrex_db_connection_string", "addon-modules/ModreX/config/modrex.ini", "realXtend:db_connectionstring",
+                         dbNames->value("modrex_db_name"));
 
         m_configHandler.m_ConfigSetupIni->UpdateFile();
         QString cwd = QDir::currentPath();

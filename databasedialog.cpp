@@ -46,6 +46,7 @@ void DatabaseDialog::SetDefaults()
     ui->lineEditUserService->setText("grid");
     ui->lineEditMessagingService->setText("grid");
     ui->lineEditNHibernate->setText("TaigaWebdav");
+    ui->lineEditModrexDb->setText("os_modrex");
 }
 
 void DatabaseDialog::on_pushButtonDefaults_clicked()

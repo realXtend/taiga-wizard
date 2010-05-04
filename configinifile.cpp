@@ -123,7 +123,8 @@ void ConfigIniFile::SetConfigItem(QString section, QString key, QString value)
     {
         if(section!=QString::null&&section!="")
         {
-            m_Sections.value(section)->insert(key, value);
+            if(m_Sections.contains(section))
+                m_Sections.value(section)->insert(key, value);
         }
         else
         {

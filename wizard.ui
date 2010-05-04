@@ -668,9 +668,9 @@ p, li { white-space: pre-wrap; }
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>220</x>
+       <x>150</x>
        <y>40</y>
-       <width>290</width>
+       <width>351</width>
        <height>16</height>
       </rect>
      </property>
@@ -745,6 +745,16 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="text">
          <string>propProv</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelModRexConnStr">
+        <property name="accessibleName">
+         <string>modrex_db_connection_string</string>
+        </property>
+        <property name="text">
+         <string>modRexDB</string>
         </property>
        </widget>
       </item>
