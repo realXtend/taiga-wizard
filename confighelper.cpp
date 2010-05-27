@@ -142,7 +142,7 @@ void ConfigHelper::CollectAllTaggedValuesFromPage(QMap<QString,QString>* map, QW
                 QString key = combo->accessibleName();
                 if(key!=""){
                     QString value = combo->currentText();
-                    value = SetQuotes(value);
+                    //value = SetQuotes(value);
                     map->insert(key, value);
                 }
             }
@@ -155,7 +155,7 @@ void ConfigHelper::CollectAllTaggedValuesFromPage(QMap<QString,QString>* map, QW
                     //str = str.replace('\n', ' ');
                     str = str.remove('\n');
                     str = str.remove('\r');
-                    str = SetQuotes(str);
+                    //str = SetQuotes(str);
                     map->insert(key, str);
                 }
             }
@@ -164,7 +164,7 @@ void ConfigHelper::CollectAllTaggedValuesFromPage(QMap<QString,QString>* map, QW
                 QString key = lineEdit->accessibleName();
                 if(key!=""){
                     QString str = lineEdit->text();
-                    str = SetQuotes(str);
+                    //str = SetQuotes(str);
                     map->insert(key, str);
                 }
             }
@@ -174,7 +174,7 @@ void ConfigHelper::CollectAllTaggedValuesFromPage(QMap<QString,QString>* map, QW
                 QString key = label->accessibleName();
                 if(key!=""){
                     QString str = label->text();
-                    str = SetQuotes(str);
+                    //str = SetQuotes(str);
                     map->insert(key, str);
                 }
             }

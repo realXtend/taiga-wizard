@@ -46,12 +46,12 @@ void RegionWizard::on_btnNewUUID_clicked()
 void RegionWizard::GoToStart()
 {
     this->restart();    
-    SetDefaults();
+    //SetDefaults();
 }
 
 void RegionWizard::SetDefaults()
 {
-    this->ui->lineEditExternalHostName->setText("SYSTEMIP");
+    //this->ui->lineEditExternalHostName->setText("SYSTEMIP");
 }
 
 void RegionWizard::on_btnNextPort_clicked()

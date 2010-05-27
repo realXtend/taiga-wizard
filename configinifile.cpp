@@ -170,13 +170,13 @@ void ConfigIniFile::UpdateFile() // will lose comments on ini file
     {
         if(m_GlobalKeyComments.contains(key))
             ConfigContents.append(m_GlobalKeyComments.value(key));
-        ConfigContents.append(key+"="+m_GlobalItems.value(key)+"\n\r");
+        ConfigContents.append(key+"="+m_GlobalItems.value(key)+"\n");
     }
     foreach(QString key, m_SectionOrder)
     {
         if(m_SectionComments.contains(key))
             ConfigContents.append(m_SectionComments.value(key));
-        ConfigContents.append("["+key+"]\n\r");
+        ConfigContents.append("["+key+"]\n");
 
         QList<QString>* sectionKeysOrder = m_SectionKeyOrders.value(key);
         QMap<QString,QString>* sectionKeyValuePairs = m_Sections.value(key);
@@ -187,7 +187,7 @@ void ConfigIniFile::UpdateFile() // will lose comments on ini file
             QString val = sectionKeyValuePairs->value("Taiga-Config-Value");
             QString line = "Taiga-Config-Value=";
             line.append(val);
-            ConfigContents.append(line + "\n\r");
+            ConfigContents.append(line + "\n");
         }
 
         foreach(QString itemKey, *sectionKeysOrder)
@@ -197,7 +197,7 @@ void ConfigIniFile::UpdateFile() // will lose comments on ini file
             if(itemKey!=QString::null && itemKey!=""){
                 if(sectionKeyComments->contains(itemKey))
                     ConfigContents.append(sectionKeyComments->value(itemKey));
-                ConfigContents.append(itemKey+"="+value+"\n\r");
+                ConfigContents.append(itemKey+"="+value+"\n");
             }
         }
     }

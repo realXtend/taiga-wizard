@@ -98,6 +98,10 @@ void ConfigHandler::WriteValuesToConf(ConfigFile* conf, QMap<QString, QString> u
         }
 
         QString valueToSet = uiMap.value(section);
+        if (valueToSet.contains("Data Source"))
+        {
+            valueToSet = SetQuotes(valueToSet);
+        }
 
         QMap<QString,QString>* map = m_ConfigSetupIni->m_Sections.value(section);
         if(map->keys().contains(fileName))
@@ -140,6 +144,15 @@ void ConfigHandler::WriteValuesToConf(ConfigFile* conf, QMap<QString, QString> u
             }
         }
     }
+}
+
+QString ConfigHandler::SetQuotes(QString string)
+{
+    if(!string.startsWith("\"")&&!string.endsWith("\"")){
+        string.insert(0,"\"");
+        string.append("\"");
+    }
+    return string;
 }
 
 void ConfigHandler::WriteValuesToRegion(QMap<QString, QString> uiMap)

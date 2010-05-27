@@ -69,6 +69,7 @@ private:
     void SetValueChange(QString& destiny, QString& valueToSet);
     void SetValueAppend(QString& destiny, QString& valueToSet);
     bool SetValueCheckRemove(QString& destiny, QString& valueToSet, bool inverse);
+    static QString SetQuotes(QString string);
 
     void ApplyGridConfig();
     void ApplySimConfig();
