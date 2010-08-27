@@ -1,0 +1,12 @@
+TaigaWizard is a Taiga configuration helper, designed to help aleviate the pain of configuring the set of ini/xml files needed to have a functional setup. If discover any bugs, or have any suggestions please let us know by email, IRC, or by placing a bug in the issue tracker.
+
+== Building ==
+
+TaigaWizard is a Qt application, and requires the Qt SDK.
+
+=== Linux ===
+
+$ qmake
+$ make
+$ cd bin/
+$ ./TaigaWizard
