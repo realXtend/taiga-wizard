@@ -1,1 +1,0 @@
-Data Source=${DataSource}$;Database=${Database}$;User ID=${User}$;Password=${Password}$;
